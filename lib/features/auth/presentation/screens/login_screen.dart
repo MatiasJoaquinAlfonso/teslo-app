@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:teslo_shop/features/auth/presentation/providers/providers.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -45,11 +47,13 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class _LoginForm extends StatelessWidget {
+class _LoginForm extends ConsumerWidget {
   const _LoginForm();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final loginForm = ref.watch(loginFormProvider);
+
     final textStyles = Theme.of(context).textTheme;
 
     return Padding(
@@ -58,13 +62,23 @@ class _LoginForm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text('Login', style: textStyles.titleLarge),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
+            onChanged: (value) =>
+                ref.read(loginFormProvider.notifier).onEmailChange(value),
+            errorMessage: loginForm.isFormPosted ? 
+              loginForm.email.errorMessage 
+              : null,
           ),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
+            onChanged: (value) =>
+                ref.read(loginFormProvider.notifier).onPasswordChanged(value),
+            errorMessage: loginForm.isFormPosted ?
+              loginForm.password.errorMessage
+              : null,
           ),
           SizedBox(
               width: double.infinity,
@@ -72,7 +86,9 @@ class _LoginForm extends StatelessWidget {
               child: CustomFilledButton(
                 text: 'Ingresar',
                 buttonColor: Colors.black,
-                onPressed: () {},
+                onPressed: () {
+                  ref.read(loginFormProvider.notifier).onFormSumit();
+                },
               )),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

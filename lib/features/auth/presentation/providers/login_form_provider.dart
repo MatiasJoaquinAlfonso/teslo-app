@@ -2,17 +2,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
+//!3 - StateNotifierProider - consume afuera
+final loginFormProvider = StateNotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>((ref) {
+  return LoginFormNotifier();
+});
+
+
 //!1 - State de este StateNotifier
 class LoginFormState {
   final bool isPosting;
-  final bool isFormPosterd;
+  final bool isFormPosted;
   final bool isValid;
   final Email email;
   final Password password;
 
   LoginFormState({
     this.isPosting = false,
-    this.isFormPosterd = false,
+    this.isFormPosted = false,
     this.isValid = false,
     this.email = const Email.pure(),
     this.password = const Password.pure(),
@@ -20,25 +26,24 @@ class LoginFormState {
 
   LoginFormState copyWith({
     bool? isPosting,
-    bool? isFormPosterd,
+    bool? isFormPosted,
     bool? isValid,
     Email? email,
     Password? password,
   }) =>
       LoginFormState(
           isPosting: isPosting ?? this.isPosting,
-          isFormPosterd: isFormPosterd ?? this.isFormPosterd,
+          isFormPosted: isFormPosted ?? this.isFormPosted,
           isValid: isValid ?? this.isValid,
           email: email ?? this.email,
           password: password ?? this.password);
 
   @override
   String toString() {
-    //TODO: IMplement toString
     return '''
       LoginFormState:
         isPosting: $isPosting
-        isFormPosterd: $isFormPosterd
+        isFormPosted: $isFormPosted
         isValid: $isValid
         email: $email
         password: $password
@@ -76,14 +81,11 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
     final password = Password.dirty(state.password.value);
 
     state = state.copyWith(
-        isFormPosterd: true,
+        isFormPosted: true,
         email: email,
         password: password,
         isValid: Formz.validate([email, password]));
   }
 }
 
-//!3 - StateNotifierProider - consume afuera
-final loginFormProvider = StateNotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>((ref) {
-  return LoginFormNotifier();
-});
+
