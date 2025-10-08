@@ -3,7 +3,7 @@ import 'package:formz/formz.dart';
 import 'package:teslo_shop/features/auth/presentation/providers/auth_provider.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
-//!3 - StateNotifierProider - consume afuera
+//!3 - StateNotifierProvider - consume afuera
 final loginFormProvider = StateNotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>((ref) {
 
   final loginUserCallback = ref.watch(authProvider.notifier).loginUser;
@@ -82,12 +82,12 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
   onFormSumit() async {
     _touchEveryField();
 
-    //print(state);
+    // print(state);
 
-    if (state.isValid) return;
+    if ( !state.isValid ) return;
 
     await loginUserCallback( state.email.value, state.password.value );
-
+ 
   }
 
   _touchEveryField() {

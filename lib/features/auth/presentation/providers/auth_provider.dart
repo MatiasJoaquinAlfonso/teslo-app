@@ -9,7 +9,9 @@ import '../../domain/domain.dart';
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = AuthRepositoryImpl();
 
-  return AuthNotifier(authRepository: authRepository);
+  return AuthNotifier(
+    authRepository: authRepository
+  );
 });
 
 
@@ -73,8 +75,8 @@ class AuthState {
   final User? user;
   final String errorMessage;
 
-  AuthState(
-      {this.authStatus = AuthStatus.cheking,
+  AuthState({
+      this.authStatus = AuthStatus.cheking,
       this.user,
       this.errorMessage = ''});
 
