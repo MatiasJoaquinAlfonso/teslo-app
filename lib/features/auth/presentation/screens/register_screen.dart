@@ -90,9 +90,11 @@ class _RegisterForm extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox(height: 5),
+          // const SizedBox(height: 5),
+          const Spacer(),
           Text('Nueva cuenta', style: textStyles.titleMedium),
-          const SizedBox(height: 5),
+          const Spacer(),
+          // const SizedBox(height: 5),
           CustomTextFormField(
             label: 'Nombre completo',
             keyboardType: TextInputType.emailAddress,
@@ -103,7 +105,7 @@ class _RegisterForm extends ConsumerWidget {
                 ? registerForm.fullName.errorMessage
                 : null,
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 30),
           CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
@@ -113,7 +115,7 @@ class _RegisterForm extends ConsumerWidget {
                 ? registerForm.email.errorMessage
                 : null,
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 30),
           CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
@@ -124,7 +126,7 @@ class _RegisterForm extends ConsumerWidget {
                 ? registerForm.password.errorMessage
                 : null,
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 30),
           CustomTextFormField(
             label: 'Repita la contraseña',
             obscureText: true,
@@ -135,7 +137,7 @@ class _RegisterForm extends ConsumerWidget {
                 ? registerForm.repeatPassword.errorMessage
                 : null,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 30),
           SizedBox(
               width: double.infinity,
               height: 60,
