@@ -67,7 +67,7 @@ class _LoginForm extends ConsumerWidget {
     ref.listen(authProvider, (previus, next) { 
       if ( next.errorMessage.isEmpty ) return;
       showSnackbar( context, next.errorMessage);
-     });
+    });
 
     final textStyles = Theme.of(context).textTheme;
 

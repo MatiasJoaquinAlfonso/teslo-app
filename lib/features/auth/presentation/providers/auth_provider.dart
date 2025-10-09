@@ -67,8 +67,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
       authStatus: AuthStatus.authenticated,
       errorMessage: '',
     );
-
-
   }
 
   Future<void> logout([ String? errorMessage ]) async {
