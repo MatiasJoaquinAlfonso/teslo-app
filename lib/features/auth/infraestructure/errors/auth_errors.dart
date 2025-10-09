@@ -9,8 +9,8 @@ class ConnectionTimeout implements Exception {}
 
 class CustomError implements Exception {
   final String messaje;
-  final int errorCode;
+  // final int errorCode;
 
-  CustomError(this.messaje, this.errorCode);
+  CustomError(this.messaje);
 
 }
