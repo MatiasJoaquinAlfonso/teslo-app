@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop/features/auth/infraestructure/errors/auth_errors.dart';
@@ -29,7 +30,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier({
     required this.authRepository,
     required this.keyValueStorageService,
-  }) : super(AuthState());
+  }) : super(AuthState()) {
+    checkStatus();
+  }
 
   Future<void> loginUser(String email, String password) async {
     await Future.delayed( const Duration(milliseconds: 500));
@@ -65,6 +68,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   void checkStatus() async {
+    final token = await keyValueStorageService.getValue<String>('token');
+    if( token == null) return logout(); 
+
+    try {
+      final user = await authRepository.chechAuthStatus(token);
+      _setLoggedUser(user);
+
+    } catch (e) {
+      logout();
+    }
 
   }
 
