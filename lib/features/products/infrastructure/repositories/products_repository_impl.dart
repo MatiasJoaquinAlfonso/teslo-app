@@ -11,7 +11,6 @@ class ProductsRepositoryImpl extends ProductsRepository {
   @override
   Future<Product> createUpdateProduct(Map<String, dynamic> productLike) {
     return datasource.createUpdateProduct(productLike);
-
   }
 
   @override
@@ -20,7 +19,7 @@ class ProductsRepositoryImpl extends ProductsRepository {
   }
 
   @override
-  Future<Product> getProductsByPage({int limit = 10, int offset = 0}) {
+  Future<List<Product>> getProductsByPage({int limit = 10, int offset = 0}) {
     return datasource.getProductsByPage( limit: limit, offset: offset );
   }
 
