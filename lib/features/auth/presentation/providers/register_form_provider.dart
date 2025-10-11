@@ -4,14 +4,14 @@ import 'package:teslo_shop/features/auth/presentation/providers/auth_provider.da
 import 'package:teslo_shop/features/shared/shared.dart';
 
 //!3 - StateNotifierProider - consume afuera
-final registerFormProvider = StateNotifierProvider.autoDispose<RegisterFormNotifier, RegisterFormState>((ref) {
-  
+final registerFormProvider =
+    StateNotifierProvider.autoDispose<RegisterFormNotifier, RegisterFormState>(
+        (ref) {
   final registerUserCallback = ref.watch(authProvider.notifier).registerUser;
 
   return RegisterFormNotifier(
     registerUserCallback: registerUserCallback,
   );
-
 });
 
 //!1 - State de este StateNotifier
@@ -24,8 +24,8 @@ class RegisterFormState {
   final Password password;
   final ConfirmedPassword repeatPassword;
 
-  RegisterFormState({
-      this.isPosting = false,
+  RegisterFormState(
+      {this.isPosting = false,
       this.isFormPosted = false,
       this.isValid = false,
       this.fullName = const Username.pure(),
@@ -33,23 +33,22 @@ class RegisterFormState {
       this.password = const Password.pure(),
       this.repeatPassword = const ConfirmedPassword.pure()});
 
-  RegisterFormState copyWith({
-    bool? isPosting,
-    bool? isFormPosted,
-    bool? isValid,
-    Username? fullName,
-    Email? email,
-    Password? password,
-    ConfirmedPassword? repeatPassword
-  }) => RegisterFormState(
-    isPosting: isPosting ?? this.isPosting,
-    isFormPosted: isFormPosted ?? this.isFormPosted,
-    isValid: isValid ?? this.isValid,
-    fullName: fullName ?? this.fullName,
-    email: email ?? this.email,
-    password: password ?? this.password,
-    repeatPassword: repeatPassword ?? this.repeatPassword
-  );
+  RegisterFormState copyWith(
+          {bool? isPosting,
+          bool? isFormPosted,
+          bool? isValid,
+          Username? fullName,
+          Email? email,
+          Password? password,
+          ConfirmedPassword? repeatPassword}) =>
+      RegisterFormState(
+          isPosting: isPosting ?? this.isPosting,
+          isFormPosted: isFormPosted ?? this.isFormPosted,
+          isValid: isValid ?? this.isValid,
+          fullName: fullName ?? this.fullName,
+          email: email ?? this.email,
+          password: password ?? this.password,
+          repeatPassword: repeatPassword ?? this.repeatPassword);
 
   @override
   String toString() {
@@ -68,12 +67,11 @@ class RegisterFormState {
 
 //!2 - Como implementamos un notifier
 class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
-
-  final Function (String, String, String) registerUserCallback;
+  final Function(String, String, String) registerUserCallback;
 
   RegisterFormNotifier({
     required this.registerUserCallback,
-  }): super(RegisterFormState());
+  }) : super(RegisterFormState());
 
   onUsernameChanged(String value) {
     final newUsername = Username.dirty(value);
@@ -121,11 +119,12 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
 
     if (!state.isValid) return;
 
-    state = state.copyWith( isPosting: true );
+    state = state.copyWith(isPosting: true);
 
-    await registerUserCallback(state.email.value, state.password.value, state.fullName.value);
+    await registerUserCallback(
+        state.email.value, state.password.value, state.fullName.value);
 
-    state = state.copyWith( isPosting: false );
+    state = state.copyWith(isPosting: false);
   }
 
   _touchEveryField() {
@@ -133,8 +132,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     final email = Email.dirty(state.email.value);
     final password = Password.dirty(state.password.value);
     final repeatPassword = ConfirmedPassword.dirty(
-        password: state.password.value, value: state.repeatPassword.value
-    );
+        password: state.password.value, value: state.repeatPassword.value);
 
     state = state.copyWith(
         isFormPosted: true,
