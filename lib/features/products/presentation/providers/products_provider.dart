@@ -35,6 +35,8 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
     final products = await productsRepository
       .getProductsByPage(limit: state.limit, offset: state.offset);
 
+    if ( !mounted ) return;
+
     if ( products.isEmpty ) {
       state = state.copyWith(
         isLoading: false,
@@ -47,7 +49,7 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
       isLastPage: false,
       isLoading: false,
       offset: state.offset + 10,
-      productos: [...state.productos, ...products],
+      products: [...state.products, ...products ]
     );
 
   }
@@ -61,14 +63,14 @@ class ProductsState {
   final int limit;
   final int offset;
   final bool isLoading;
-  final List<Product> productos;
+  final List<Product> products;
 
   ProductsState({
     this.isLastPage = false, 
     this.limit = 10, 
     this.offset = 0, 
     this.isLoading = false, 
-    this.productos = const[]
+    this.products = const[]
   });
 
   ProductsState copyWith({
@@ -76,13 +78,13 @@ class ProductsState {
     int? limit,
     int? offset,
     bool? isLoading,
-    List<Product>? productos,
+    List<Product>? products,
   }) => ProductsState(
     isLastPage: isLastPage ?? this.isLastPage,
     limit: limit ?? this.limit,
     offset: offset ?? this.offset,
     isLoading: isLoading ?? this.isLoading,
-    productos: productos ?? this.productos,
+    products: products ?? this.products,
   );
 
 }
