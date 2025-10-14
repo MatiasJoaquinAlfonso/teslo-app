@@ -17,7 +17,7 @@ class ProductCard extends StatelessWidget {
       children: [
         _ImageViewer( images: product.images ),
 
-        Text(product.title),
+        Text( product.title, textAlign: TextAlign.center,),
         const SizedBox(height: 20),
       ],
     );
@@ -43,8 +43,6 @@ class _ImageViewer extends StatelessWidget {
         ),
       );
     }
-
-    // final imageToShow = images.first.replaceAll('/products/', '/product/');
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
