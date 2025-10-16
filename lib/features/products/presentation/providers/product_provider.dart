@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
 import 'package:teslo_shop/features/products/presentation/providers/providers.dart';
 
-final prodcutProvider = StateNotifierProvider.autoDispose.family<ProductNotifier, ProductState, String>(
+final productProvider = StateNotifierProvider.autoDispose.family<ProductNotifier, ProductState, String>(
   (ref, productId) {
     
     final productsRepository = ref.watch(productsRepositoryProvider);
@@ -23,9 +23,24 @@ class ProductNotifier extends StateNotifier<ProductState> {
   ProductNotifier({
     required this.productsRepository,
     required String productId,
-  }): super(ProductState(id: productId));
+  }): super(ProductState(id: productId)){
+    loadProduct();
+  }
 
   Future<void> loadProduct() async {
+
+    try {
+      
+      final product = await productsRepository.getProductsById(state.id);
+
+      state = state.copyWith(
+        isLoading: false,
+        product: product,
+      );
+
+    } catch (e) {
+      print(e);
+    }
 
   }
 
@@ -43,7 +58,7 @@ class ProductState {
     required this.id, 
     this.product, 
     this.isLoading = true, 
-    this.isSaving = true,
+    this.isSaving = false,
   });
 
   ProductState copyWith({
