@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
 import 'products_repository_provider.dart';
@@ -24,6 +25,34 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
   }): super( ProductsState() ) {
     loadNextPage();
    }
+
+  Future<bool> createOrUpdateProduct( Map<String, dynamic> productLike ) async {
+
+    try {
+      final product = await productsRepository.createUpdateProduct(productLike);
+      final isProductInList = state.products.any((element) => element.id == product.id,);
+
+      if ( !isProductInList ){
+        state = state.copyWith(
+          products: [...state.products, product]
+        );
+        return true;
+      }
+
+      state = state.copyWith(
+        products: state.products.map(
+          (element) => ( element.id == product.id ) ? product : element,
+        ).toList()
+      );
+      
+      return true;
+
+    } catch (e) {
+      return false;
+    }
+
+  }
+
 
   Future loadNextPage() async {
 

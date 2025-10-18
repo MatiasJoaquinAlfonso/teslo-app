@@ -8,7 +8,8 @@ import 'package:teslo_shop/features/shared/shared.dart';
 final productFormProvider = StateNotifierProvider.autoDispose.family<ProductFormNotifier, ProductFormState, Product>(
   (ref, product) {
 
-    final createUpdateCallback = ref.watch( productsRepositoryProvider ).createUpdateProduct;
+    // final createUpdateCallback = ref.watch( productsRepositoryProvider ).createUpdateProduct;
+    final createUpdateCallback = ref.watch( productsProvider.notifier ).createOrUpdateProduct;
 
     return ProductFormNotifier(
       product: product,
@@ -20,7 +21,7 @@ final productFormProvider = StateNotifierProvider.autoDispose.family<ProductForm
 
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
-  final Future<Product> Function( Map<String, dynamic> productLike )? onSumbitCallback;
+  final Future<bool> Function( Map<String, dynamic> productLike )? onSumbitCallback;
 
   ProductFormNotifier({
     this.onSumbitCallback,
@@ -62,8 +63,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     };
 
     try {
-      await onSumbitCallback!( productLike );
-      return true;
+      return await onSumbitCallback!( productLike );
     } catch (e) {
       return false;
     }
