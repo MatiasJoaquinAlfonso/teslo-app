@@ -39,7 +39,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
       );
 
     } catch (e) {
-      print(e);
+      print('Error: $e');
     }
 
   }

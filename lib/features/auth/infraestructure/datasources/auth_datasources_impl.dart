@@ -32,10 +32,7 @@ class AuthDatasourcesImpl extends AuthDatasource {
     } catch (e) {
       throw Exception('Error no controlado.');
     }
-
-
-    // TODO: implement chechAuthStatus
-    throw UnimplementedError();
+    
   }
 
   @override

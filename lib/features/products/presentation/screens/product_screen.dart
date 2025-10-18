@@ -14,13 +14,16 @@ class ProductScreen extends ConsumerWidget {
     required this.productId,
   });
 
-  void showSnackbar( BuildContext context ){
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Producto actualizado.'))
-    );
+  // void showSnackbar( BuildContext context ){
+  //   ScaffoldMessenger.of(context).clearSnackBars();
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     const SnackBar(content: Text('Producto actualizado.'))
+  //   );
     
-  }
+  // }
+
+
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,9 +53,12 @@ class ProductScreen extends ConsumerWidget {
 
           ref.read(
             productFormProvider(productState.product!).notifier
-          ).onFormSumbit();
-          
-
+          ).onFormSumbit().then(
+            (value) {
+              if(!value) return;
+              _showCenterOverlay;
+            } ,
+          );
 
         },
         child: Icon( Icons.save_as_outlined ),
@@ -292,5 +298,53 @@ class _ImageGallery extends StatelessWidget {
           );
       }).toList(),
     );
+  }
+}
+
+class _showCenterOverlay extends StatelessWidget {
+  
+  // const _showCenterOverlay({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: 300,
+            height: 150,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 60,
+                ),
+
+                SizedBox(height: 10),
+                Text(
+                  'Product has been updated',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
   }
 }
