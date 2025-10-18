@@ -2,16 +2,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:teslo_shop/config/config.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
+import 'package:teslo_shop/features/products/presentation/providers/providers.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
 final productFormProvider = StateNotifierProvider.autoDispose.family<ProductFormNotifier, ProductFormState, Product>(
   (ref, product) {
 
-    // TODO: Create Update Callback
+    final createUpdateCallback = ref.watch( productsRepositoryProvider ).createUpdateProduct;
 
     return ProductFormNotifier(
       product: product,
-      //TODO: onSumbitCallback: createUpdateCallback
+      onSumbitCallback: createUpdateCallback,
     );
   },
 );
@@ -19,7 +20,7 @@ final productFormProvider = StateNotifierProvider.autoDispose.family<ProductForm
 
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
-  final void Function( Map<String, dynamic> productLike )? onSumbitCallback;
+  final Future<Product> Function( Map<String, dynamic> productLike )? onSumbitCallback;
 
   ProductFormNotifier({
     this.onSumbitCallback,
@@ -43,10 +44,8 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     _touchedEverything();
     if ( !state.isFormValid ) return false;
 
-    //TODO: return
-    // if( onSumbitCallback == null ) return false;
+    if( onSumbitCallback == null ) return false;
 
-    print('SI HAY ERROR EN IMAGENES REVISAR ESTA CALL A LA API, podria ser products no product');
     final productLike = {
       'id': state.id,
       'title': state.title.value,
@@ -62,8 +61,13 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
       ).toList(),
     };
 
-    return true;
-    //TODO: Llamar on sumbit call back
+    try {
+      await onSumbitCallback!( productLike );
+      return true;
+    } catch (e) {
+      return false;
+    }
+
   }
 
   void _touchedEverything (){
