@@ -19,7 +19,7 @@ class Price extends FormzInput<double, PriceError> {
     if ( isValid || isPure ) return null;
 
     if ( displayError == PriceError.empty ) return 'El campo es requerido';
-    if ( displayError == PriceError.value ) return 'Tiene que ser 0 o mayor';
+    if ( displayError == PriceError.value ) return 'Tiene que ser un numero mayor o igual a cero';
 
     return null;
   }
@@ -29,7 +29,7 @@ class Price extends FormzInput<double, PriceError> {
   PriceError? validator(double value) {
     
     if ( value.toString().isEmpty || value.toString().trim().isEmpty ) return PriceError.empty;
-    if ( value <= 0 ) return PriceError.value;
+    if ( value < 0 ) return PriceError.value;
 
     return null;
   }
