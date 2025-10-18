@@ -43,7 +43,8 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     _touchedEverything();
     if ( !state.isFormValid ) return false;
 
-    if( onSumbitCallback == null ) return false;
+    //TODO: return
+    // if( onSumbitCallback == null ) return false;
 
     print('SI HAY ERROR EN IMAGENES REVISAR ESTA CALL A LA API, podria ser products no product');
     final productLike = {
