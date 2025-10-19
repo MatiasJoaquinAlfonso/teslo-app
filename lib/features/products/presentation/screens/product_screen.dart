@@ -27,57 +27,61 @@ class ProductScreen extends ConsumerWidget {
 
     final productState = ref.watch( productProvider(productId) );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Editar producto'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              
-            },
-            icon: Icon( Icons.camera_alt_outlined ),
-          ),
-        ],
-      ),
-
-      body: productState.isLoading
-      ? const FullScreenLoader()
-      : _ProductView(product: productState.product! ),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Editar producto'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                
+              },
+              icon: Icon( Icons.camera_alt_outlined ),
+            ),
+          ],
+        ),
       
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          if ( productState.product == null ) return;
-
-          final value = await ref.read(
-            productFormProvider(productState.product!).notifier
-          ).onFormSumbit();
-
-          if ( value || context.mounted ) {
-            showCenterOverlay(
-              // context, 
-              ref.context, 
-              'Producto actualizado',
-              Icons.check,
-              Colors.green,
-              Duration(seconds: 2),
-            );
-          }
-
-          if ( !value || !context.mounted ) {
-            showCenterOverlay(
-            //         // context, 
-              ref.context, 
-              'Error al actualizar',
-             Icons.close,
-             Colors.red,
-              Duration(seconds: 2),
-            );
-          }
-        },
-        child: Icon( Icons.save_as_outlined ),
+        body: productState.isLoading
+        ? const FullScreenLoader()
+        : _ProductView(product: productState.product! ),
+        
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            FocusScope.of(context).unfocus();
+            if ( productState.product == null ) return;
+      
+            final value = await ref.read(
+              productFormProvider(productState.product!).notifier
+            ).onFormSumbit();
+      
+            if ( value || context.mounted ) {
+              showCenterOverlay(
+                // context, 
+                ref.context, 
+                'Producto actualizado',
+                Icons.check,
+                Colors.green,
+                Duration(seconds: 2),
+              );
+            }
+      
+            if ( !value || !context.mounted ) {
+              showCenterOverlay(
+              //         // context, 
+                ref.context, 
+                'Error al actualizar',
+               Icons.close,
+               Colors.red,
+                Duration(seconds: 2),
+              );
+            }
+          },
+          child: Icon( Icons.save_as_outlined ),
+        ),
+      
+      
       ),
-
-
     );
   }
 }
@@ -237,6 +241,7 @@ class _SizeSelector extends StatelessWidget {
       }).toList(), 
       selected: Set.from( selectedSizes ),
       onSelectionChanged: (newSelection) {
+        FocusScope.of(context).unfocus();
         onSizesChanged(List.from(newSelection));
       },
       multiSelectionEnabled: true,
@@ -278,6 +283,7 @@ class _GenderSelector extends StatelessWidget {
         }).toList(), 
         selected: { selectedGender },
         onSelectionChanged: (newSelection) {
+          FocusScope.of(context).unfocus();
           onGenderChanged(newSelection.first);
         },
 
