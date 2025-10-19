@@ -27,10 +27,35 @@ class ProductNotifier extends StateNotifier<ProductState> {
     loadProduct();
   }
 
+  Product newEmptyProduct() {
+    return Product(
+      id: 'new', 
+      title: 'New title', 
+      price: 0, 
+      description: '', 
+      slug: '', 
+      stock: 0, 
+      sizes: [''], 
+      gender: '', 
+      tags: [], 
+      images: [], 
+    );
+
+  }
+
+
   Future<void> loadProduct() async {
 
     try {
       
+      if ( state.id == 'new' ){
+        state = state.copyWith(
+          isLoading: false,
+          product: newEmptyProduct(),
+        );
+        return;
+      }
+
       final product = await productsRepository.getProductsById(state.id);
 
       state = state.copyWith(
@@ -39,6 +64,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
       );
 
     } catch (e) {
+      // TODO: Implementar manejo de errores.
       print('Error: $e');
     }
 

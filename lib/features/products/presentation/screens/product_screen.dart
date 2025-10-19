@@ -22,9 +22,6 @@ class ProductScreen extends ConsumerWidget {
     
   // }
 
-
-
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
@@ -51,15 +48,31 @@ class ProductScreen extends ConsumerWidget {
         onPressed: () async {
           if ( productState.product == null ) return;
 
-          ref.read(
+          final value = await ref.read(
             productFormProvider(productState.product!).notifier
-          ).onFormSumbit().then(
-            (value) {
-              if(!value) return;
-              _showCenterOverlay;
-            } ,
-          );
+          ).onFormSumbit();
 
+          if ( value || context.mounted ) {
+            showCenterOverlay(
+              // context, 
+              ref.context, 
+              'Producto actualizado',
+              Icons.check,
+              Colors.green,
+              Duration(seconds: 2),
+            );
+          }
+
+          if ( !value || !context.mounted ) {
+            showCenterOverlay(
+            //         // context, 
+              ref.context, 
+              'Error al actualizar',
+             Icons.close,
+             Colors.red,
+              Duration(seconds: 2),
+            );
+          }
         },
         child: Icon( Icons.save_as_outlined ),
       ),
@@ -298,53 +311,5 @@ class _ImageGallery extends StatelessWidget {
           );
       }).toList(),
     );
-  }
-}
-
-class _showCenterOverlay extends StatelessWidget {
-  
-  // const _showCenterOverlay({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            width: 300,
-            height: 150,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 10,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-
-            child: const Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  color: Colors.green,
-                  size: 60,
-                ),
-
-                SizedBox(height: 10),
-                Text(
-                  'Product has been updated',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
   }
 }
