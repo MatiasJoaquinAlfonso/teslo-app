@@ -34,8 +34,20 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       final response = await dio.post('/files/product', data: data);
 
       return response.data['image'];
+    } on DioException catch (e) {
+      if ( e.response?.statusCode == 400 ){
+        throw CustomError(e.response?.data['message']);
+      }
+      if ( e.type == DioExceptionType.connectionTimeout ){
+        throw CustomError('Tiempo de espera agotado.');
+      }
+      if (e.response?.data['message'] != null ) {
+        throw CustomError(e.response?.data['message']);
+      }
+
+      throw CustomError('Algo salió mal.');
     } catch (e) {
-      throw Exception();  
+      throw Exception('Algo salió mal.');  
     }
 
   }
