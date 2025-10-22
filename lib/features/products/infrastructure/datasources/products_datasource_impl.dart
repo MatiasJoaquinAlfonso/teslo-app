@@ -21,6 +21,37 @@ class ProductsDatasourceImpl extends ProductsDatasource {
     )
   );
 
+  Future<String> _uploadFile( String path ) async {
+    
+    try {
+      
+      final fileName = path.split('/').last;
+      final FormData data = FormData.fromMap({
+        'file': MultipartFile.fromFileSync(path, filename: fileName),
+      });
+
+
+      final response = await dio.post('/files/product', data: data);
+
+      return response.data['image'];
+    } catch (e) {
+      throw Exception();  
+    }
+
+  }
+
+  Future<List<String>> _uploadPhotos ( List<String> photos ) async {
+
+    final photosToUpload = photos.where((element) => element.contains('/')).toList();
+    final photosToIgnore = photos.where((element) => !element.contains('/')).toList();
+
+    final List<Future<String>> uploadJob = photosToUpload.map(_uploadFile).toList();
+    final newImages = await Future.wait(uploadJob);
+
+    return [...photosToIgnore, ...newImages ];
+
+  }
+
   @override
   Future<Product> createUpdateProduct(Map<String, dynamic> productLike) async {
 
@@ -31,6 +62,7 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       final String url = (productId == null) ? '/products' : '/products/$productId';
 
       productLike.remove('id');
+      productLike['images'] = await _uploadPhotos( productLike['images'] );
 
       final response = await dio.request(
         url,
@@ -43,8 +75,17 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       final product = ProductMapper.jsonToEntity(response.data);
       return product;
 
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        throw CustomError( e.response?.data['message'] ?? 'Revisar los datos ingresados.' );
+      }
+      if ( e.type == DioExceptionType.connectionTimeout ){
+        throw CustomError('Revisar conexion a internet.');
+      }
+
+      throw Exception('Algo salió mal.');
     } catch (e) {
-      throw Exception();
+      throw CustomError('Algo salió mal.');
     }
 
   }
@@ -59,24 +100,40 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       return product;
 
     } on DioException catch (e) {
-      if ( e.response!.statusCode == 404 ) throw ProductsNotFound(); 
-      throw Exception();
+      if ( e.response!.statusCode == 404 ) {
+        throw ProductsNotFound(e.response!.data['message']); 
+      }
+      throw Exception('Algo salió mal.');
       
     } catch (e) {
-      throw Exception();
+      throw Exception('Algo salió mal.');
     }
 
   }
 
   @override
   Future<List<Product>> getProductsByPage({int limit = 10, int offset = 0}) async {
-    final response = await dio.get<List>('/products?limit=$limit&offset=$offset');
-    final List<Product> products = [];
-    for ( var product in response.data ?? [] ) {
-      products.add( ProductMapper.jsonToEntity( product ) );
+
+    try {
+      final response = await dio.get<List>('/products?limit=$limit&offset=$offset');
+      final List<Product> products = [];
+      for ( var product in response.data ?? [] ) {
+        products.add( ProductMapper.jsonToEntity( product ) );
+      }
+  
+      return products;
+    } on DioException catch (e) {
+      if ( e.response?.statusCode == 404 ) {
+        throw ProductsNotFound(e.response?.data['message'] ?? 'No se encontraron los procutos.');
+      }
+
+      throw Exception('Algo salió mal.');
+    } 
+    catch (e) {
+      throw CustomError('Algo salió mal.');
     }
 
-    return products;
+
   }
 
   @override

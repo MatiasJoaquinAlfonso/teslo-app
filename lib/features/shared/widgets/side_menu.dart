@@ -26,6 +26,8 @@ class SideMenuState extends ConsumerState<SideMenu> {
 
     final hasNotch = MediaQuery.of(context).viewPadding.top > 35;
     final textStyles = Theme.of(context).textTheme;
+    final authState = ref.watch(authProvider);
+    final userName = authState.user?.fullnName;
 
     return NavigationDrawer(
       elevation: 1,
@@ -50,7 +52,8 @@ class SideMenuState extends ConsumerState<SideMenu> {
 
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 16, 10),
-          child: Text('Tony Stark', style: textStyles.titleSmall ),
+          // child: Text('Tony Stark', style: textStyles.titleSmall ),
+          child: Text('$userName', style: textStyles.titleSmall,),
         ),
 
         const NavigationDrawerDestination(
